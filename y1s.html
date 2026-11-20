@@ -256,20 +256,34 @@ function tip(t){
 }
 /* 语音：优先用系统语音；浏览器没有语音时，改走在线发音兜底 */
 const HAS_TTS = !!(window.speechSynthesis && window.SpeechSynthesisUtterance);
+/* 手机上（微信/华为浏览器）系统语音常常"有对象但不发声"，一律改走在线发音 */
+const IS_MOBILE = /Android|iPhone|iPad|iPod|HarmonyOS|Mobile/i.test(navigator.userAgent || "");
+function zhVoiceList(){
+  try{ return (speechSynthesis.getVoices() || []).filter(function(v){ return /zh|cmn/i.test(v.lang || "") || /chinese|中文|普通话/i.test(v.name || ""); }); }catch(e){ return []; }
+}
+function useSystemTTS(){ return HAS_TTS && !IS_MOBILE && zhVoiceList().length > 0; }
+(function unlockAudio(){
+  var done = false;
+  var silent = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+  function un(){ if(done) return; done = true; try{ var a = new Audio(silent); a.volume = 0.01; var p = a.play(); if(p && p.catch){ p.catch(function(){}); } }catch(e){} }
+  document.addEventListener("touchstart", un, { once: true, passive: true });
+  document.addEventListener("click", un, { once: true });
+})();
 let ttsAudio = null;
 function onlineSpeak(text, onEnd){
   try{
-    if(ttsAudio){ try{ ttsAudio.pause(); }catch(e){} }
-    const a = new Audio("https://fanyi.baidu.com/gettts?lan=zh&spd=2&source=web&text=" + encodeURIComponent(text));
-    a.onended = function(){ if(onEnd) onEnd(); };
-    a.onerror = function(){ if(onEnd) onEnd(); };
-    ttsAudio = a;
-    const p = a.play();
+    if(!ttsAudio){ ttsAudio = new Audio(); ttsAudio.preload = "auto"; }
+    try{ ttsAudio.pause(); }catch(e){}
+    ttsAudio.onended = function(){ if(onEnd) onEnd(); };
+    ttsAudio.onerror = function(){ if(onEnd) onEnd(); };
+    ttsAudio.src = "https://fanyi.baidu.com/gettts?lan=zh&spd=2&source=web&text=" + encodeURIComponent(text);
+    ttsAudio.volume = 1.0;
+    var p = ttsAudio.play();
     if(p && p.catch){ p.catch(function(){ if(onEnd) onEnd(); }); }
   }catch(e){ if(onEnd) onEnd(); }
 }
 function say(text){
-  if(HAS_TTS){
+  if(useSystemTTS()){
     try{
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
@@ -286,7 +300,7 @@ function say(text){
 let speakQ = [], speakTimer = null;
 function speakQueue(list){
   clearTimeout(speakTimer);
-  if(HAS_TTS){ try{ speechSynthesis.cancel(); }catch(e){} }
+  if(useSystemTTS()){ try{ speechSynthesis.cancel(); }catch(e){} }
   speakQ = list.slice();
   nextSpeak();
 }
@@ -294,7 +308,7 @@ function nextSpeak(){
   if(!speakQ.length) return;
   const t = speakQ.shift();
   const nxt = function(){ speakTimer = setTimeout(nextSpeak, 240); };
-  if(HAS_TTS){
+  if(useSystemTTS()){
     try{
       const u = new SpeechSynthesisUtterance(t);
       u.lang = "zh-CN"; u.rate = 0.86; u.pitch = 1.0;
@@ -694,7 +708,7 @@ function musicStart(){
   const a = document.getElementById("bgm");
   if(!a){ bindUnlock(); return; }
   try{
-    a.volume = 0.5;
+    a.volume = 0.12;
     const p = a.play();
     if(p && p.then){ p.catch(function(){ bindUnlock(); }); }   /* 被浏览器拦了，等第一次点 */
   }catch(e){ bindUnlock(); }
@@ -1000,7 +1014,7 @@ function trySpeak(text){
 }
 function openVoice(){
   const has = HAS_TTS;
-  const vs = has ? ((window.speechSynthesis.getVoices()||[]).filter(v=>/zh|cmn/i.test(v.lang||"") || /chinese/i.test(v.name||""))) : [];
+  const vs = has ? zhVoiceList() : [];
   const cur = ZH_VOICE ? ZH_VOICE.name : "";
   const box = document.createElement("div");
   box.className = "vpanel";
