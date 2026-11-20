@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<!-- 洞见国学 编 · 一年级上册写字表 · 二〇二六年 · 免费赠予，可任意转发 -->
+<html lang="zh-CN">
+<meta charset="utf-8">
+<title>一年级上册 写字表 · 认读描红</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{
+  --paper:#fbf8f1; --ink:#2b2620; --line:#e6ddcb; --zhu:#c4553f;
+  --qing:#5d8d7e; --huang:#d9a441; --gray:#b9b1a2;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;background:var(--paper);color:var(--ink);min-height:100vh;
+  font-family:"KaiTi","楷体","STKaiti","Noto Serif SC",serif;
+  padding:16px 14px 34px;display:flex;flex-direction:column;align-items:center;
+}
+.wrap{width:100%;max-width:560px}
+.hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.hd h1{font-size:20px;margin:0;letter-spacing:.05em;font-weight:400}
+.hd .sub{font-size:12px;color:#9a9287;font-family:system-ui,sans-serif}
+.back{background:none;border:0;font-size:15px;color:var(--qing);font-family:inherit;cursor:pointer;padding:6px 4px}
+
+/* 关卡网格 */
+.groups{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.g{
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:13px 8px;text-align:center;cursor:pointer;position:relative;transition:.15s
+}
+.g:active{transform:scale(.97)}
+.g .n{font-family:system-ui,sans-serif;font-size:11px;color:#a39b8d}
+.g .t{font-size:16px;margin:3px 0 6px}
+.g .cs{font-size:22px;letter-spacing:.06em;color:#6d6558}
+.g .bar{height:3px;border-radius:2px;background:#eee7d8;margin-top:8px;overflow:hidden}
+.g .bar i{display:block;height:100%;background:var(--qing);width:0}
+.g.done .t::after{content:" ✓";color:var(--qing);font-size:13px}
+
+/* 字卡 */
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px 16px 14px}
+.top{display:flex;align-items:flex-start;gap:12px}
+.zi{font-size:76px;line-height:1;flex:0 0 auto;padding:0 2px}
+.info{flex:1;padding-top:6px}
+.py{font-family:system-ui,sans-serif;font-size:19px;color:var(--qing);letter-spacing:.05em}
+.ws{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.chip{border:1px solid var(--line);background:#fdfbf6;border-radius:999px;padding:4px 11px;font-size:15px;color:#5a5348}
+.sent{font-size:15.5px;color:#736b5e;line-height:1.7;margin-top:10px}
+.sent b{color:var(--zhu);font-weight:400}
+
+/* 描红区 */
+.miaowu{margin-top:14px}
+.mtitle{font-size:13px;color:#9a9287;font-family:system-ui,sans-serif;margin-bottom:6px;display:flex;justify-content:space-between}
+canvas#pad{width:100%;aspect-ratio:1/1;border-radius:14px;background:#fff;border:1px solid var(--line);touch-action:none;display:block}
+.mrow{display:flex;gap:8px;margin-top:9px}
+.mbtn{flex:1;border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px 0;font-family:inherit;font-size:15px;color:#736b5e;cursor:pointer}
+.mbtn.pri{background:#eef4f1;border-color:#cfe1d9;color:var(--qing)}
+.stars{font-size:20px;color:var(--huang);letter-spacing:.12em;min-height:26px;margin-top:6px;font-family:system-ui,sans-serif}
+
+/* 按钮 */
+.row{display:flex;gap:9px;margin-top:14px}
+.btn{flex:1;border:0;border-radius:14px;padding:14px 0;font-size:17px;font-family:inherit;cursor:pointer;transition:.15s}
+.btn:active{transform:translateY(1px)}
+.btn.say{background:#eef4f1;color:var(--qing);border:1px solid #cfe1d9}
+.btn.next{background:var(--qing);color:#fff}
+.btn.ghost{background:#fff;color:#8b8478;border:1px solid var(--line)}
+
+/* 测验 */
+.quiz{text-align:center}
+.qt{font-size:18px;margin:4px 0 2px}
+.qh{font-size:13px;color:#9a9287;font-family:system-ui,sans-serif;margin-bottom:14px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 0;font-size:40px;font-family:inherit;cursor:pointer;color:var(--ink)}
+.opt.right{background:#eaf4ef;border-color:var(--qing);color:var(--qing)}
+.opt.wrong{background:#fbeeea;border-color:#e6b6a8;color:var(--zhu)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,12px);background:rgba(43,38,32,.92);color:#fff;padding:9px 18px;border-radius:999px;font-family:system-ui,sans-serif;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:9}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.foot{font-family:system-ui,sans-serif;font-size:11.5px;color:#aaa294;text-align:center;margin-top:18px;line-height:1.6}
+.musbar{position:fixed;right:12px;bottom:14px;z-index:40;display:flex;gap:8px}
+.mus{border:1px solid var(--line);background:rgba(255,253,248,.96);border-radius:999px;padding:9px 14px;font:12px/1 system-ui,sans-serif;color:#6d6558;cursor:pointer;box-shadow:0 2px 8px rgba(80,60,30,.10)}
+.mus.off{color:#b9b1a2;opacity:.72}
+.vpanel{position:fixed;inset:0;background:rgba(43,38,32,.38);z-index:60;display:flex;align-items:flex-end}
+.vbox{background:var(--paper);width:100%;max-width:560px;margin:0 auto;border-radius:18px 18px 0 0;padding:18px 16px 24px;max-height:76vh;overflow:auto;box-shadow:0 -4px 24px rgba(0,0,0,.12)}
+.vbox h3{font-size:16px;margin:0 0 6px;font-weight:400}
+.vbox p{font-size:12.5px;color:#9a9287;margin:0 0 12px;line-height:1.75;font-family:system-ui,sans-serif}
+.vopt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:10px;padding:12px 14px;margin-bottom:8px;font:14px/1.4 system-ui,sans-serif;color:#5a5348;cursor:pointer}
+.vopt.on{border-color:#cfe1d9;background:#eef4f1;color:#5d8d7e}
+
+</style>
+
+<div class="wrap">
+  <div class="hd">
+    <button class="back" id="back" style="visibility:hidden">← 返回</button>
+    <div style="text-align:center">
+      <h1 id="title">一年级上册 · 写字表</h1>
+      <div class="sub" id="sub">100 个字 · 认读 · 描红 · 游戏</div>
+    </div>
+    <div style="width:52px"></div>
+  </div>
+  <div id="stage"></div>
+  <div class="foot">描红用鼠标或手指写，写得接近就给星星。字按课本课次排列。</div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="musbar"><button class="mus" id="mus">♫ 音乐开</button><button class="mus" id="mus2">♪ 声音</button></div>
+
+<script>
+/* ============ 字与组词句 ============ */
+const D = {
+"一":{p:"yī",w:["一个","一天","一起"],j:"我有<b>一</b>个红苹果。"},
+"二":{p:"èr",w:["二月","二十","第二"],j:"弟弟今年<b>二</b>岁。"},
+"三":{p:"sān",w:["三天","三月","三个"],j:"桌上有<b>三</b>个苹果。"},
+"上":{p:"shàng",w:["上学","早上","上课"],j:"我每天早<b>上</b>去上学。"},
+"口":{p:"kǒu",w:["开口","门口","人口"],j:"妈妈在门<b>口</b>等我。"},
+"耳":{p:"ěr",w:["耳朵","木耳"],j:"小兔子的<b>耳</b>朵长长的。"},
+"目":{p:"mù",w:["目光","双目"],j:"他的<b>目</b>光看向窗外。"},
+"手":{p:"shǒu",w:["小手","洗手","手心"],j:"我洗<b>手</b>再吃饭。"},
+"日":{p:"rì",w:["日子","生日","日光"],j:"今天是我的生<b>日</b>。"},
+"火":{p:"huǒ",w:["火车","大火","火苗"],j:"<b>火</b>车开得很快。"},
+"田":{p:"tián",w:["水田","田地","田野"],j:"爷爷在<b>田</b>里种稻子。"},
+"禾":{p:"hé",w:["禾苗","禾田"],j:"春天，<b>禾</b>苗绿了。"},
+"六":{p:"liù",w:["六个","六月"],j:"我<b>六</b>岁开始学画画。"},
+"七":{p:"qī",w:["七天","七月"],j:"一周有<b>七</b>天。"},
+"八":{p:"bā",w:["八个","八月"],j:"树上有<b>八</b>只小鸟。"},
+"十":{p:"shí",w:["十个","十分"],j:"我数到<b>十</b>。"},
+"九":{p:"jiǔ",w:["九个","九月"],j:"天上有<b>九</b>颗星星。"},
+"王":{p:"wáng",w:["王子","大王"],j:"故事里有位<b>王</b>子。"},
+"午":{p:"wǔ",w:["中午","上午"],j:"中<b>午</b>我们吃米饭。"},
+"下":{p:"xià",w:["下午","下来","下雨"],j:"外面<b>下</b>雨了。"},
+"去":{p:"qù",w:["出去","回去","去年"],j:"我们<b>去</b>公园玩。"},
+"年":{p:"nián",w:["今年","过年","新年"],j:"新<b>年</b>到了。"},
+"了":{p:"le",w:["来了","好了"],j:"天晴<b>了</b>，我们出去玩。"},
+"子":{p:"zǐ",w:["孩子","桌子","椅子"],j:"桌上有一把椅<b>子</b>。"},
+"大":{p:"dà",w:["大人","大小","长大"],j:"我<b>大</b>了，要自己穿衣。"},
+"人":{p:"rén",w:["大人","人们","好人"],j:"妈妈是<b>人</b>，我也是<b>人</b>。"},
+"可":{p:"kě",w:["可以","可爱","可是"],j:"小猫真<b>可</b>爱。"},
+"叶":{p:"yè",w:["树叶","叶子"],j:"秋天，<b>叶</b>子黄了。"},
+"东":{p:"dōng",w:["东方","东西"],j:"太阳从<b>东</b>边升起。"},
+"西":{p:"xī",w:["西方","东西","西瓜"],j:"太阳从<b>西</b>边落下。"},
+"竹":{p:"zhú",w:["竹子","竹林"],j:"熊猫爱吃<b>竹</b>子。"},
+"马":{p:"mǎ",w:["小马","马路"],j:"一匹小<b>马</b>跑过来。"},
+"牙":{p:"yá",w:["牙齿","月牙"],j:"我每天刷<b>牙</b>。"},
+"用":{p:"yòng",w:["有用","用心"],j:"我用铅笔画画。"},
+"几":{p:"jǐ",w:["几个","几天"],j:"你有<b>几</b>本书？"},
+"四":{p:"sì",w:["四个","四季"],j:"一年有<b>四</b>季。"},
+"小":{p:"xiǎo",w:["大小","小心","小鸟"],j:"一只<b>小</b>猫在叫。"},
+"鸟":{p:"niǎo",w:["小鸟","鸟儿"],j:"<b>鸟</b>儿在树上唱歌。"},
+"是":{p:"shì",w:["就是","不是","可是"],j:"这<b>是</b>我的书包。"},
+"天":{p:"tiān",w:["天空","白天","今天"],j:"<b>天</b>上有白云。"},
+"女":{p:"nǚ",w:["女儿","女生"],j:"姐姐是<b>女</b>孩。"},
+"开":{p:"kāi",w:["开门","开心","开花"],j:"花<b>开</b>了。"},
+"关":{p:"guān",w:["关门","开关"],j:"请把门<b>关</b>上。"},
+"先":{p:"xiān",w:["先后","先生"],j:"我<b>先</b>洗手，再吃饭。"},
+"云":{p:"yún",w:["白云","云朵"],j:"天上有一朵<b>云</b>。"},
+"雨":{p:"yǔ",w:["下雨","雨衣","雨点"],j:"外面下<b>雨</b>了。"},
+"虫":{p:"chóng",w:["虫子","小虫"],j:"草里有一只小<b>虫</b>。"},
+"山":{p:"shān",w:["高山","山水","爬山"],j:"远处有一座<b>山</b>。"},
+"水":{p:"shuǐ",w:["喝水","水果","河水"],j:"我要喝<b>水</b>。"},
+"力":{p:"lì",w:["力气","用力"],j:"他<b>力</b>气很大。"},
+"男":{p:"nán",w:["男生","男孩"],j:"弟弟是<b>男</b>孩。"},
+"土":{p:"tǔ",w:["土地","泥土"],j:"花种在<b>土</b>里。"},
+"木":{p:"mù",w:["木头","树木","木板"],j:"桌子是<b>木</b>头做的。"},
+"心":{p:"xīn",w:["开心","小心","用心"],j:"我今天很开<b>心</b>。"},
+"尺":{p:"chǐ",w:["尺子","米尺"],j:"我用<b>尺</b>子画直线。"},
+"本":{p:"běn",w:["本子","书本"],j:"这是我的<b>本</b>子。"},
+"刀":{p:"dāo",w:["小刀","刀子"],j:"<b>刀</b>很锋利，小心手。"},
+"不":{p:"bù",w:["不好","不是","不怕"],j:"我<b>不</b>怕黑。"},
+"少":{p:"shǎo",w:["多少","很少"],j:"你有多<b>少</b>本书？"},
+"中":{p:"zhōng",w:["中间","中午","中国"],j:"我站在<b>中</b>间。"},
+"五":{p:"wǔ",w:["五个","五月"],j:"我有<b>五</b>根手指。"},
+"风":{p:"fēng",w:["大风","风车"],j:"<b>风</b>吹得树叶沙沙响。"},
+"立":{p:"lì",w:["站立","立正"],j:"请<b>立</b>正站好。"},
+"正":{p:"zhèng",w:["正在","正好"],j:"他<b>正</b>在看书。"},
+"工":{p:"gōng",w:["工人","工作"],j:"爸爸是<b>工</b>人。"},
+"厂":{p:"chǎng",w:["工厂","厂长"],j:"妈妈在<b>厂</b>里上班。"},
+"门":{p:"mén",w:["大门","门口"],j:"<b>门</b>开了。"},
+"卫":{p:"wèi",w:["卫生","保卫"],j:"我们要讲<b>卫</b>生。"},
+"月":{p:"yuè",w:["月亮","月光","日月"],j:"<b>月</b>亮弯弯的。"},
+"儿":{p:"ér",w:["儿子","女儿","儿童"],j:"花园里的花<b>儿</b>开了。"},
+"头":{p:"tóu",w:["头发","点头","石头"],j:"我<b>头</b>上戴帽子。"},
+"里":{p:"lǐ",w:["里面","家里","手里"],j:"铅笔在书包<b>里</b>。"},
+"见":{p:"jiàn",w:["看见","再见"],j:"我<b>见</b>过这只小狗。"},
+"在":{p:"zài",w:["正在","现在","在家"],j:"妈妈<b>在</b>家。"},
+"我":{p:"wǒ",w:["我们","自我"],j:"<b>我</b>爱我的家。"},
+"左":{p:"zuǒ",w:["左边","左手"],j:"我的<b>左</b>边是小明。"},
+"右":{p:"yòu",w:["右边","右手"],j:"我用<b>右</b>手写字。"},
+"和":{p:"hé",w:["和好","温和"],j:"我<b>和</b>妈妈去公园。"},
+"也":{p:"yě",w:["也是","也好"],j:"我<b>也</b>想去。"},
+"又":{p:"yòu",w:["又是","又大又红"],j:"苹果<b>又</b>大<b>又</b>红。"},
+"才":{p:"cái",w:["才能","刚才"],j:"他<b>才</b>五岁。"},
+"爸":{p:"bà",w:["爸爸"],j:"<b>爸</b>爸带我去钓鱼。"},
+"妈":{p:"mā",w:["妈妈"],j:"<b>妈</b>妈做饭真好吃。"},
+"比":{p:"bǐ",w:["比较","对比"],j:"我<b>比</b>弟弟高。"},
+"巴":{p:"bā",w:["尾巴","嘴巴"],j:"小狗摇着尾<b>巴</b>。"},
+"长":{p:"cháng",w:["长短","长年"],j:"这条绳子很<b>长</b>。"},
+"公":{p:"gōng",w:["公园","公鸡"],j:"我们去<b>公</b>园玩。"},
+"只":{p:"zhī",w:["一只","两只"],j:"树上有<b>只</b>小鸟。"},
+"个":{p:"gè",w:["一个","个人"],j:"我有<b>个</b>新书包。"},
+"多":{p:"duō",w:["多少","好多"],j:"天上有好<b>多</b>星星。"},
+"石":{p:"shí",w:["石头","石子"],j:"河里有<b>石</b>头。"},
+"出":{p:"chū",w:["出来","出去","日出"],j:"太阳<b>出</b>来了。"},
+"来":{p:"lái",w:["来了","回来"],j:"妈妈<b>来</b>了。"},
+"半":{p:"bàn",w:["一半","半天"],j:"我吃了<b>半</b>个苹果。"},
+"你":{p:"nǐ",w:["你们","你好"],j:"<b>你</b>好！"},
+"有":{p:"yǒu",w:["有的","没有"],j:"我<b>有</b>一只小猫。"},
+"牛":{p:"niú",w:["小牛","水牛"],j:"<b>牛</b>在吃草。"},
+"羊":{p:"yáng",w:["小羊","山羊"],j:"小<b>羊</b>咩咩叫。"},
+"果":{p:"guǒ",w:["水果","果子"],j:"我爱吃水<b>果</b>。"},
+"白":{p:"bái",w:["白色","白云","白天"],j:"雪是<b>白</b>的。"}
+};
+
+/* ============ 分组（按课本课次） ============ */
+const G = [
+  {n:"识字2", c:["一","二","三","上"]},
+  {n:"识字3", c:["口","耳","目","手"]},
+  {n:"识字4", c:["日","火","田","禾"]},
+  {n:"园地一", c:["六","七","八","十"]},
+  {n:"园地二", c:["九","王"]},
+  {n:"园地三", c:["午","下"]},
+  {n:"园地四", c:["去","年"]},
+  {n:"阅读1", c:["了","子","大","人"]},
+  {n:"阅读2", c:["可","叶","东","西"]},
+  {n:"阅读3", c:["竹","马","牙","用","几"]},
+  {n:"阅读4", c:["四","小","鸟","是","天"]},
+  {n:"园地五", c:["女","开","关","先"]},
+  {n:"识字5", c:["云","雨","虫","山","水"]},
+  {n:"识字6", c:["力","男","土","木","心"]},
+  {n:"识字7", c:["尺","本","刀","不","少"]},
+  {n:"识字8", c:["中","五","风","立","正"]},
+  {n:"园地六", c:["工","厂","门","卫"]},
+  {n:"阅读5", c:["月","儿","头","里","见"]},
+  {n:"阅读6", c:["在","我","左","右"]},
+  {n:"阅读7", c:["和","也","又","才"]},
+  {n:"园地七", c:["爸","妈"]},
+  {n:"阅读8", c:["比","巴","长","公"]},
+  {n:"阅读9", c:["只","个","多","石","出"]},
+  {n:"阅读10", c:["来","半","你","有"]},
+  {n:"园地八", c:["牛","羊","果","白"]}
+];
+
+/* ============ 状态 ============ */
+const KEY = "zsb_y1s_v1";
+let S = {stars:{}, done:{}};
+try{ const raw = localStorage.getItem(KEY); if(raw) S = JSON.parse(raw); }catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+const stage = document.getElementById("stage");
+const titleEl = document.getElementById("title");
+const subEl = document.getElementById("sub");
+const backEl = document.getElementById("back");
+let view = "home", gi = 0, ci = 0;
+
+/* ============ 朗读 ============ */
+let tid;
+function tip(t){
+  const el = document.getElementById("toast");
+  el.textContent = t; el.classList.add("on");
+  clearTimeout(tid); tid = setTimeout(()=>el.classList.remove("on"), 1800);
+}
+/* 语音：优先用系统语音；浏览器没有语音时，改走在线发音兜底 */
+const HAS_TTS = !!(window.speechSynthesis && window.SpeechSynthesisUtterance);
+/* 手机上（微信/华为浏览器）系统语音常常"有对象但不发声"，一律改走在线发音 */
+const IS_MOBILE = /Android|iPhone|iPad|iPod|HarmonyOS|Mobile/i.test(navigator.userAgent || "");
+function zhVoiceList(){
+  try{ return (speechSynthesis.getVoices() || []).filter(function(v){ return /zh|cmn/i.test(v.lang || "") || /chinese|中文|普通话/i.test(v.name || ""); }); }catch(e){ return []; }
+}
+function useSystemTTS(){ return HAS_TTS && !IS_MOBILE && zhVoiceList().length > 0; }
+(function unlockAudio(){
+  var done = false;
+  var silent = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+  function un(){ if(done) return; done = true; try{ var a = new Audio(silent); a.volume = 0.01; var p = a.play(); if(p && p.catch){ p.catch(function(){}); } }catch(e){} }
+  document.addEventListener("touchstart", un, { once: true, passive: true });
+  document.addEventListener("click", un, { once: true });
+})();
+let ttsAudio = null;
+function onlineSpeak(text, onEnd){
+  try{
+    if(!ttsAudio){
+      ttsAudio = document.createElement("audio");
+      ttsAudio.setAttribute("playsinline", "");
+      ttsAudio.preload = "auto";
+      document.body.appendChild(ttsAudio);
+    }
+    try{ ttsAudio.pause(); }catch(e){}
+    ttsAudio.onended = function(){ if(onEnd) onEnd(); };
+    ttsAudio.onerror = function(){ if(onEnd) onEnd(); };
+    ttsAudio.src = "https://fanyi.baidu.com/gettts?lan=zh&spd=2&source=web&text=" + encodeURIComponent(text);
+    ttsAudio.volume = 1.0;
+    var p = ttsAudio.play();
+    if(p && p.catch){ p.catch(function(){ if(onEnd) onEnd(); }); }
+  }catch(e){ if(onEnd) onEnd(); }
+}
+function say(text){
+  if(useSystemTTS()){
+    try{
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang="zh-CN"; u.rate=0.85; u.pitch=1.0;
+      if(ZH_VOICE) u.voice = ZH_VOICE;
+      speechSynthesis.speak(u);
+      return;
+    }catch(e){}
+  }
+  onlineSpeak(text);
+}
+
+/* 串读：先把待读的几段排成队，读完一段接下一段 */
+let speakQ = [], speakTimer = null;
+function speakQueue(list){
+  clearTimeout(speakTimer);
+  if(useSystemTTS()){ try{ speechSynthesis.cancel(); }catch(e){} }
+  speakQ = list.slice();
+  nextSpeak();
+}
+function nextSpeak(){
+  if(!speakQ.length) return;
+  const t = speakQ.shift();
+  const nxt = function(){ speakTimer = setTimeout(nextSpeak, 240); };
+  if(useSystemTTS()){
+    try{
+      const u = new SpeechSynthesisUtterance(t);
+      u.lang = "zh-CN"; u.rate = 0.86; u.pitch = 1.0;
+      if(ZH_VOICE) u.voice = ZH_VOICE;
+      u.onend = nxt; u.onerror = nxt;
+      speechSynthesis.speak(u);
+      return;
+    }catch(e){}
+  }
+  onlineSpeak(t, nxt);
+}
+
+/* 一个字：字 → 三个词 → 例句 */
+function readChar(ch, d){
+  const plain = d.j.replace(/<[^>]+>/g, "");
+  speakQueue([ch, d.w.join("，"), plain]);
+}
+
+/* 跟读：用浏览器语音识别听孩子读 */
+function listenChar(ch){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ tip("这个浏览器没有麦克风识别，先用「整段读一遍」跟着读"); return; }
+  try{ speechSynthesis.cancel(); }catch(e){}
+  const r = new SR();
+  r.lang = "zh-CN"; r.interimResults = false; r.maxAlternatives = 3;
+  let done = false;
+  r.onresult = (e)=>{
+    done = true;
+    const alts = Array.from(e.results[0]).map(x=>x.transcript.replace(/\s|，|。|、/g,""));
+    const hit = alts.some(t => t.indexOf(ch) >= 0 || ch.indexOf(t) >= 0);
+    if(hit){ praise(); } else { tip("听到「" + alts[0] + "」，再读一遍试试"); }
+  };
+  r.onerror = ()=>{ if(!done) tip("没听清，凑近一点再说一次"); };
+  r.onend = ()=>{};
+  try{ r.start(); }catch(e){ tip("麦克风打不开，检查一下权限"); return; }
+  tip("请读这个字…");
+  setTimeout(()=>{ try{ r.stop(); }catch(e){} }, 4500);
+}
+function praise(){
+  const w = ["宝贝真棒！","读得真准，宝贝真棒！","太好了，宝贝真棒！","宝贝真棒，再来一个！"];
+  const s = w[Math.floor(Math.random()*w.length)];
+  say(s); tip(s);
+}
+
+/* ============ 首页 ============ */
+function renderHome(){
+  view="home"; gi=0;
+  titleEl.textContent = "一年级上册 · 写字表";
+  subEl.textContent = "100 个字 · 认读 · 描红 · 游戏";
+  backEl.style.visibility = "hidden";
+  const total = G.reduce((a,g)=>a+g.c.length,0);
+  const doneC = G.reduce((a,g)=>a+g.c.filter(c=>S.done[c]).length,0);
+  stage.innerHTML = `
+    <div style="text-align:center;margin:2px 0 16px;font-family:system-ui,sans-serif;font-size:13px;color:#9a9287">
+      已会写 <b style="color:#5d8d7e;font-weight:500">${doneC}</b> / ${total} 个字
+    </div>
+    <div class="groups">
+      ${G.map((g,i)=>{
+        const n = g.c.filter(c=>S.done[c]).length;
+        const pct = Math.round(n/g.c.length*100);
+        return `<div class="g ${pct===100?"done":""}" data-i="${i}">
+          <div class="n">${g.n}</div>
+          <div class="cs">${g.c.join("")}</div>
+          <div class="bar"><i style="width:${pct}%"></i></div>
+        </div>`;
+      }).join("")}
+    </div>
+    ${doneC === total ? '<div style="text-align:center;margin:18px 0 0"><button class="btn next" id="certbtn" style="max-width:250px;margin:0 auto">领取结业证书</button></div>' : ''}
+    <div style="text-align:center;margin:26px 0 10px;font-family:system-ui,sans-serif;font-size:14px;color:#7d7365;line-height:2.1">
+      洞见国学 · 识字软件，免安装，免费<br>
+      上册、下册、二年级都免费，随便转；知乎、微博、公众号搜「洞见国学」
+    </div>`;
+  stage.querySelectorAll(".g").forEach(el=>{
+    el.onclick = ()=>{ gi = +el.dataset.i; ci = 0; view="card"; renderCard(); };
+  });
+  const cb = document.getElementById("certbtn");
+  if(cb) cb.onclick = ()=> renderCert();
+}
+
+/* ============ 结业证书 ============ */
+function renderCert(){
+  view = "cert";
+  titleEl.textContent = "识字小状元";
+  subEl.textContent = "一年级上册 · 100 字全部满分";
+  backEl.style.visibility = "visible";
+  backEl.textContent = "← 返回";
+  stage.innerHTML = `
+    <div style="background:#fffdf8;padding:5px;border-radius:6px;box-shadow:0 3px 14px rgba(120,95,60,.15)">
+    <svg viewBox="0 0 780 540" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+      <defs>
+        <pattern id="grid" width="9" height="9" patternUnits="userSpaceOnUse">
+          <path d="M0 0H9V9" fill="none" stroke="#f0e5c9" stroke-width="0.7"/>
+        </pattern>
+        <pattern id="hb" width="24" height="24" patternUnits="userSpaceOnUse">
+          <rect width="24" height="24" fill="#22694e"/>
+          <path d="M12 2L22 12L12 22L2 12Z" fill="none" stroke="#e5c67c" stroke-width="1.3"/>
+          <circle cx="12" cy="12" r="2.1" fill="#e5c67c"/>
+        </pattern>
+        <radialGradient id="gold" cx="50%" cy="32%" r="72%">
+          <stop offset="0" stop-color="#fdedb6"/>
+          <stop offset="1" stop-color="#d5a442"/>
+        </radialGradient>
+        <linearGradient id="rib" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#cf342c"/>
+          <stop offset="1" stop-color="#8d1210"/>
+        </linearGradient>
+      </defs>
+
+      <rect width="780" height="540" fill="#fdf6e3"/>
+      <rect width="780" height="540" fill="url(#grid)"/>
+
+      <rect x="10" y="10" width="760" height="34" fill="url(#hb)"/>
+      <rect x="10" y="496" width="760" height="34" fill="url(#hb)"/>
+      <rect x="10" y="44" width="34" height="452" fill="url(#hb)"/>
+      <rect x="736" y="44" width="34" height="452" fill="url(#hb)"/>
+
+      <rect x="46" y="46" width="688" height="448" fill="none" stroke="#c8a358" stroke-width="2.5"/>
+      <rect x="43" y="43" width="694" height="454" fill="none" stroke="#e8d3a4" stroke-width="1"/>
+
+      <g>
+        <circle cx="27" cy="27" r="16" fill="url(#gold)" stroke="#a8802f" stroke-width="1.2"/>
+        <polygon transform="translate(27,27)" points="0,-9 2.6,-2.8 8.6,-2.8 3.7,1.4 5.5,7.3 0,4 -5.5,7.3 -3.7,1.4 -8.6,-2.8 -2.6,-2.8" fill="#22694e"/>
+      </g>
+      <g>
+        <circle cx="753" cy="27" r="16" fill="url(#gold)" stroke="#a8802f" stroke-width="1.2"/>
+        <polygon transform="translate(753,27)" points="0,-9 2.6,-2.8 8.6,-2.8 3.7,1.4 5.5,7.3 0,4 -5.5,7.3 -3.7,1.4 -8.6,-2.8 -2.6,-2.8" fill="#22694e"/>
+      </g>
+      <g>
+        <circle cx="27" cy="513" r="16" fill="url(#gold)" stroke="#a8802f" stroke-width="1.2"/>
+        <polygon transform="translate(27,513)" points="0,-9 2.6,-2.8 8.6,-2.8 3.7,1.4 5.5,7.3 0,4 -5.5,7.3 -3.7,1.4 -8.6,-2.8 -2.6,-2.8" fill="#22694e"/>
+      </g>
+      <g>
+        <circle cx="753" cy="513" r="16" fill="url(#gold)" stroke="#a8802f" stroke-width="1.2"/>
+        <polygon transform="translate(753,513)" points="0,-9 2.6,-2.8 8.6,-2.8 3.7,1.4 5.5,7.3 0,4 -5.5,7.3 -3.7,1.4 -8.6,-2.8 -2.6,-2.8" fill="#22694e"/>
+      </g>
+
+      <path d="M390 20C324 18 266 36 238 70C282 50 338 44 390 44Z" fill="url(#rib)"/>
+      <path d="M390 20C456 18 514 36 542 70C498 50 442 44 390 44Z" fill="url(#rib)"/>
+      <path d="M390 23C332 25 282 42 252 66" fill="none" stroke="#e0685e" stroke-width="1.3" opacity=".5"/>
+      <path d="M390 23C448 25 498 42 528 66" fill="none" stroke="#e0685e" stroke-width="1.3" opacity=".5"/>
+      <path d="M238 70L224 102L240 96L244 72Z" fill="#8d1210"/>
+      <path d="M542 70L556 102L540 96L536 72Z" fill="#8d1210"/>
+      <line x1="227" y1="104" x2="226" y2="132" stroke="#c8a358" stroke-width="1.5"/>
+      <line x1="234" y1="104" x2="234" y2="136" stroke="#c8a358" stroke-width="1.5"/>
+      <line x1="241" y1="102" x2="242" y2="132" stroke="#c8a358" stroke-width="1.5"/>
+      <line x1="549" y1="104" x2="550" y2="132" stroke="#c8a358" stroke-width="1.5"/>
+      <line x1="542" y1="104" x2="542" y2="136" stroke="#c8a358" stroke-width="1.5"/>
+      <line x1="535" y1="102" x2="534" y2="132" stroke="#c8a358" stroke-width="1.5"/>
+      <circle cx="226" cy="135" r="2.6" fill="#e5c67c"/>
+      <circle cx="234" cy="139" r="2.6" fill="#e5c67c"/>
+      <circle cx="242" cy="135" r="2.6" fill="#e5c67c"/>
+      <circle cx="534" cy="135" r="2.6" fill="#e5c67c"/>
+      <circle cx="542" cy="139" r="2.6" fill="#e5c67c"/>
+      <circle cx="550" cy="135" r="2.6" fill="#e5c67c"/>
+
+      <circle cx="390" cy="32" r="29" fill="url(#gold)" stroke="#a8802f" stroke-width="2"/>
+      <circle cx="390" cy="32" r="23" fill="none" stroke="#b71c1c" stroke-width="1.5"/>
+      <polygon transform="translate(390,32)" points="0,-14 4,-4.4 14.6,-4.4 6.2,2.2 9,12 0,6.4 -9,12 -6.2,2.2 -14.6,-4.4 -4,-4.4" fill="#b71c1c"/>
+
+      <text x="96" y="166" font-family="KaiTi,楷体,serif" font-size="21" fill="#2b2620">邰姿 同学：</text>
+      <text x="96" y="208" font-family="KaiTi,楷体,serif" font-size="18" fill="#3a322a">在人教版一年级上册写字表描红练习中，</text>
+      <text x="96" y="242" font-family="KaiTi,楷体,serif" font-size="18" fill="#3a322a">一百个字，每字三遍，遍遍满分，荣获</text>
+
+      <text x="390" y="316" text-anchor="middle" font-family="KaiTi,楷体,serif" font-size="66" font-weight="bold" fill="#b71c1c" letter-spacing="8">识字小状元</text>
+
+      <text x="96" y="368" font-family="KaiTi,楷体,serif" font-size="18" fill="#3a322a">特发此状，以资鼓励。</text>
+
+      <text x="700" y="398" text-anchor="end" font-family="KaiTi,楷体,serif" font-size="16" fill="#4a3c2e">合肥市振兴小学</text>
+      <text x="700" y="426" text-anchor="end" font-family="KaiTi,楷体,serif" font-size="16" fill="#4a3c2e">亲善大使　邰姿</text>
+      <text x="700" y="454" text-anchor="end" font-family="KaiTi,楷体,serif" font-size="16" fill="#4a3c2e">二〇二六年</text>
+
+      <g opacity=".93">
+        <circle cx="512" cy="424" r="46" fill="none" stroke="#b0271f" stroke-width="3"/>
+        <circle cx="512" cy="424" r="40.5" fill="none" stroke="#b0271f" stroke-width="1"/>
+        <path id="ct" d="M481 407A33 33 0 0 1 543 407" fill="none"/>
+        <text font-family="KaiTi,楷体,serif" font-size="10.5" fill="#b0271f">
+          <textPath href="#ct" startOffset="50%" text-anchor="middle">合肥市振兴小学</textPath>
+        </text>
+        <path id="cb" d="M481 441A33 33 0 0 0 543 441" fill="none"/>
+        <text font-family="KaiTi,楷体,serif" font-size="10.5" fill="#b0271f">
+          <textPath href="#cb" startOffset="50%" text-anchor="middle">亲善大使</textPath>
+        </text>
+        <polygon transform="translate(512,424)" points="0,-12 3.4,-3.8 12.5,-3.8 5.3,1.9 7.7,10.2 0,5.4 -7.7,10.2 -5.3,1.9 -12.5,-3.8 -3.4,-3.8" fill="#b0271f"/>
+      </g>
+
+      <text x="96" y="474" font-family="KaiTi,楷体,serif" font-size="12" fill="#a89a80">洞见国学 · 免费赠予，可任意转发</text>
+    </svg>
+    </div>
+    <div style="text-align:center;font-size:12px;color:#b3aa9c;margin:8px 0 12px">截个图，就是一张证书</div>
+    <div class="row"><button class="btn ghost" id="cback">回目录</button></div>`;
+  document.getElementById("cback").onclick = ()=> renderHome();
+  confetti();
+  say("恭喜你，小状元！");
+}
+
+/* ============ 字卡 ============ */
+let pian = 0;
+function renderCard(){
+  view="card";
+  const g = G[gi];
+  titleEl.textContent = g.n;
+  subEl.textContent = `第 ${ci+1} / ${g.c.length} 字 · ${g.c.join(" ")}`;
+  backEl.style.visibility = "visible";
+  backEl.textContent = "← 返回";
+
+  const ch = g.c[ci];
+  const d = D[ch];
+  pian = 0;
+  stage.innerHTML = `
+    <div class="card">
+      <div class="top">
+        <div class="zi">${ch}</div>
+        <div class="info">
+          <div class="py">${d.p}</div>
+          <div class="ws">${d.w.map(w=>`<span class="chip">${w}</span>`).join("")}</div>
+          <div class="sent">${d.j}</div>
+        </div>
+      </div>
+      <div class="miaowu">
+        <div class="mtitle"><span id="mtxt">第 1 遍 · 共 3 遍</span><span id="mtog" style="cursor:pointer;user-select:none;color:#8ba99c">♪ 音乐</span><span id="pct" style="color:#b9b1a2">0%</span></div>
+        <canvas id="pad"></canvas>
+        <div class="mrow">
+          <button class="mbtn" id="clear">擦掉重写</button>
+          <button class="mbtn pri" id="check">写好了</button>
+        </div>
+        <div id="score" style="text-align:center;font-size:36px;font-weight:700;letter-spacing:3px;line-height:1.25;min-height:46px;background:linear-gradient(92deg,#e0503f 0%,#e8913a 22%,#d8b23a 40%,#3f9172 60%,#3a72b6 78%,#8a58c2 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 1px 2px rgba(0,0,0,.10))"></div>
+        <div class="stars" id="stars">${starStr(S.stars[ch]||0)}</div>
+      </div>
+      <div class="row">
+        <button class="btn say" id="say">整段读一遍</button>
+        <button class="btn say" id="listen">我读一遍</button>
+      </div>
+      <div class="row" style="margin-top:9px">
+        <button class="btn next" id="next">${ci < g.c.length-1 ? "下一个字" : "做游戏"}</button>
+      </div>
+    </div>`;
+
+  initPad(ch);
+  bindMusicToggle();
+  document.getElementById("say").onclick = ()=> readChar(ch, d);
+  document.getElementById("listen").onclick = ()=> listenChar(ch);
+  document.getElementById("next").onclick = ()=>{
+    if(ci < g.c.length-1){ ci++; renderCard(); }
+    else startQuiz();
+  };
+}
+
+function starStr(n){ return n ? "★".repeat(n) + "☆".repeat(3-n) : "☆☆☆"; }
+
+/* 分数弹一下，庆贺的劲儿就在这一下 */
+function popScore(el){
+  try{
+    el.animate([
+      { transform:"scale(.55)", opacity:.35 },
+      { transform:"scale(1.20)", opacity:1 },
+      { transform:"scale(1)" }
+    ], { duration:520, easing:"cubic-bezier(.2,.9,.3,1.35)" });
+  }catch(e){}
+}
+
+/* 满分撒花：一把纸片从天而降，两秒后自己清掉 */
+function confetti(){
+  const box = document.createElement("div");
+  box.style.cssText = "position:fixed;left:0;top:0;right:0;bottom:0;pointer-events:none;z-index:99;overflow:hidden";
+  document.body.appendChild(box);
+  const cs = ["#f2c14e","#e88b8b","#7fc4a2","#8bb2e8","#d9a7e0","#f0a875","#f6d365"];
+  const H = window.innerHeight || 700;
+  for(let i=0;i<56;i++){
+    const p = document.createElement("div");
+    const sz = 20 + Math.random()*24;   /* 花瓣放大三倍 */
+    p.style.cssText = "position:absolute;top:-24px;left:" + (Math.random()*100) +
+      "%;width:" + sz + "px;height:" + (sz*0.74) + "px;background:" + cs[i % cs.length] + ";border-radius:46% 54% 50% 50%/62% 58% 42% 38%";
+    box.appendChild(p);
+    p.animate([
+      { transform:"translate(0,0) rotate(0deg)", opacity:1 },
+      { transform:"translate(" + ((Math.random()*2-1)*130) + "px," + (H*0.92) + "px) rotate(" +
+        (360 + Math.random()*400) + "deg)", opacity:0.85 }
+    ], { duration: 1300 + Math.random()*900, easing:"cubic-bezier(.25,.6,.5,1)", fill:"forwards" });
+  }
+  setTimeout(function(){ box.remove(); }, 2400);
+}
+
+/* ============ 描红时的背景轻音乐 ============ */
+/* 用 Web Audio 现场合成，不依赖任何外部音频文件 */
+let actx = null, musicOn = false, musicTimer = null, birdTimer = null, master = null, revNodes = null;
+/* 默认不放音乐，嫌吵就不用管它；要点才按「♫ 音乐关」打开 */
+let melIdx = 0;
+
+/* 儿歌轮着弹：《卖报歌》→《两只老虎》→《小星星》→ 回头再来，配低音伴奏 */
+const C3 = 130.81, F3 = 174.61, G3 = 196.00;
+const C4 = 261.63, D4 = 293.66, E4 = 329.63, F4 = 349.23;
+const G4 = 392.00, A4 = 440.00, B4 = 493.88, C5 = 523.25, D5 = 587.33;
+
+/* [频率, 时长, 低音(0 或频率)] */
+const MELODY = [
+  /* 卖报歌（聂耳曲，作者 1935 年去世，早已进入公有领域） */
+  [C5,0.22,F3],[C5,0.22],[C5,0.26],[0,0.06],
+  [C5,0.22],[C5,0.22],[C5,0.26],[0,0.10],
+  [A4,0.22],[C5,0.22],[D5,0.22],[C5,0.22],[A4,0.24],[0,0.06],
+  [G4,0.22],[A4,0.22],[C5,0.28],[0,0.12],
+  [C5,0.22,G3],[A4,0.22],[C5,0.22],[A4,0.22],[G4,0.26],[0,0.06],
+  [F4,0.22],[A4,0.22],[G4,0.26],[0,0.06],
+  [A4,0.22],[A4,0.22],[G4,0.26],[0,0.12],
+  [C5,0.22,F3],[C5,0.22],[C5,0.24],[A4,0.22],[C5,0.22],[C5,0.24],[0,0.06],
+  [C5,0.22],[A4,0.22],[G4,0.22],[C5,0.30],[0,0.14],
+  [C5,0.22,G3],[A4,0.22],[G4,0.22],[A4,0.22],[0,0.06],
+  [C5,0.22],[A4,0.22],[G4,0.22],[A4,0.22],[0,0.06],
+  [C4,0.22,F3],[F4,0.22],[G4,0.22],[A4,0.24],[0,0.06],
+  [F4,0.30],[0,0.45],
+  /* 两只老虎 */
+  [C4,0.28,C3],[D4,0.28],[E4,0.28],[C4,0.28],[0,0.10],
+  [C4,0.28],[D4,0.28],[E4,0.28],[C4,0.28],[0,0.10],
+  [E4,0.28],[F4,0.28],[G4,0.30],[0,0.12],
+  [E4,0.28],[F4,0.28],[G4,0.30],[0,0.12],
+  [G4,0.26],[A4,0.26],[G4,0.26],[F4,0.26],[E4,0.26],[C4,0.28],[0,0.12],
+  [G4,0.26],[A4,0.26],[G4,0.26],[F4,0.26],[E4,0.26],[C4,0.28],[0,0.12],
+  [C4,0.28,C3],[G3,0.28,0],[C4,0.30],[0,0.12],
+  [C4,0.28,0],[G3,0.28,0],[C4,0.30],[0,0.42],
+  /* 小星星 */
+  [C4,0.32,C3],[C4,0.32],[G4,0.32],[G4,0.32],[A4,0.32],[A4,0.32],[G4,0.42],[0,0.10],
+  [F4,0.32],[F4,0.32],[E4,0.32],[E4,0.32],[D4,0.32],[D4,0.32],[C4,0.42],[0,0.12],
+  [G4,0.32,G3],[G4,0.32],[F4,0.32],[F4,0.32],[E4,0.32],[E4,0.32],[D4,0.42],[0,0.10],
+  [G4,0.32,0],[G4,0.32],[F4,0.32],[F4,0.32],[E4,0.32],[E4,0.32],[D4,0.42],[0,0.12],
+  [C4,0.32,C3],[C4,0.32],[G4,0.32],[G4,0.32],[A4,0.32],[A4,0.32],[G4,0.42],[0,0.10],
+  [F4,0.32],[F4,0.32],[E4,0.32],[E4,0.32],[D4,0.32],[D4,0.32],[C4,0.46],[0,0.55]
+];
+
+function playNote(f, dur, t0, vol, bass){
+  if(!f || !master) return;
+  /* 钢琴味：正弦打底，叠两层很弱的泛音，起音柔、尾巴自然拖出去 */
+  const partials = [[1, 1], [2, 0.20], [3, 0.07]];
+  for(const [mul, amp] of partials){
+    const o = actx.createOscillator();
+    const g = actx.createGain();
+    o.type = "sine";
+    o.frequency.setValueAtTime(f*mul, t0);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.linearRampToValueAtTime(vol*amp, t0 + 0.055);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur*1.15);
+    o.connect(g); g.connect(master);
+    o.start(t0); o.stop(t0 + dur*1.15 + 0.06);
+  }
+  /* 低音伴奏：每个乐句头上垫一个，听着才像有伴奏的歌 */
+  if(bass){
+    const ob = actx.createOscillator();
+    const gb = actx.createGain();
+    ob.type = "sine";
+    ob.frequency.setValueAtTime(bass, t0);
+    gb.gain.setValueAtTime(0.0001, t0);
+    gb.gain.linearRampToValueAtTime(0.05, t0 + 0.12);
+    gb.gain.exponentialRampToValueAtTime(0.0001, t0 + dur*2.4);
+    ob.connect(gb); gb.connect(master);
+    ob.start(t0); ob.stop(t0 + dur*2.4 + 0.06);
+  }
+}
+
+/* 一声鸟叫：先上扬再回落，短促 */
+function birdChirp(){
+  if(!actx || !musicOn || !master) return;
+  const t = actx.currentTime + 0.05;
+  const f0 = 2100 + Math.random()*1400;
+  const o = actx.createOscillator();
+  const g = actx.createGain();
+  o.type = "sine";
+  o.frequency.setValueAtTime(f0, t);
+  o.frequency.exponentialRampToValueAtTime(f0*1.55, t + 0.07);
+  o.frequency.exponentialRampToValueAtTime(f0*1.12, t + 0.17);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.linearRampToValueAtTime(0.09, t + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.21);
+  o.connect(g); g.connect(master);
+  o.start(t); o.stop(t + 0.26);
+}
+
+function scheduleMelody(){
+  if(!actx || !musicOn || !master) return;
+  let t = actx.currentTime + 0.08;
+  for(let k = 0; k < MELODY.length; k++){
+    const [f, d, b] = MELODY[melIdx % MELODY.length];
+    if(f) playNote(f, d*0.9, t, 0.11, b);
+    t += d;
+    melIdx++;
+  }
+  const span = (t - actx.currentTime) - 0.2;
+  musicTimer = setTimeout(scheduleMelody, Math.max(600, span*1000));
+}
+
+function birdLoop(){
+  if(!musicOn) return;
+  birdChirp();
+  if(Math.random() < 0.45) setTimeout(birdChirp, 210);
+  birdTimer = setTimeout(birdLoop, 1700 + Math.random()*3200);
+}
+
+function musicStart(){
+  if(!musicOn) return;
+  const a = document.getElementById("bgm");
+  if(!a){ bindUnlock(); return; }
+  try{
+    a.volume = 0.08;
+    const p = a.play();
+    if(p && p.then){ p.catch(function(){ bindUnlock(); }); }   /* 被浏览器拦了，等第一次点 */
+  }catch(e){ bindUnlock(); }
+}
+function musicStop(){
+  const a = document.getElementById("bgm");
+  if(a){ try{ a.pause(); a.currentTime = 0; }catch(e){} }
+  clearTimeout(musicTimer); musicTimer = null;
+  clearTimeout(birdTimer);  birdTimer  = null;
+}
+function bindMusicToggle(){
+  const el = document.getElementById("mtog");
+  if(!el) return;
+  el.textContent = musicOn ? "♪ 音乐" : "♪ 静音";
+  el.onclick = ()=>{
+    musicOn = !musicOn;
+    el.textContent = musicOn ? "♪ 音乐" : "♪ 静音";
+    if(musicOn) musicStart(); else musicStop();
+    try{ localStorage.setItem("zs_music", musicOn ? "1" : "0"); }catch(e){}
+    setTopMusic();
+  };
+}
+
+/* ============ 描红 · 画布 ============ */
+let pad, pctx, W=0, H=0, drawing=false, last=null, maskRatio=0, maskData=null;
+
+function initPad(ch){
+  pad = document.getElementById("pad");
+  const dprIn = window.devicePixelRatio || 1;
+  const cssW = pad.clientWidth || 300;
+  const px = Math.round(cssW * dprIn);
+  pad.width = px; pad.height = px;
+  W = px; H = px;
+  pctx = pad.getContext("2d");
+  pad.style.pointerEvents = "";
+
+  // 田字格
+  pctx.clearRect(0,0,W,H);
+  pctx.strokeStyle = "#cfe0e6"; pctx.lineWidth = Math.max(1, W*0.006);
+  pctx.setLineDash([]);
+  pctx.strokeRect(W*0.04, H*0.04, W*0.92, H*0.92);
+  pctx.setLineDash([W*0.03, W*0.035]);
+  pctx.beginPath();
+  pctx.moveTo(W*0.5, H*0.04); pctx.lineTo(W*0.5, H*0.96);
+  pctx.moveTo(W*0.04, H*0.5); pctx.lineTo(W*0.96, H*0.5);
+  pctx.stroke(); pctx.setLineDash([]);
+
+  // 灰字（描红底）
+  pctx.fillStyle = "#d8d3c6";
+  pctx.font = `${Math.round(W*0.70)}px KaiTi, 楷体, "Noto Serif SC", serif`;
+  pctx.textAlign = "center"; pctx.textBaseline = "middle";
+  pctx.fillText(ch, W*0.5, H*0.53);
+
+  // 生成字形 mask（从离屏黑字取）
+  const off = document.createElement("canvas");
+  off.width = W; off.height = H;
+  const oc = off.getContext("2d");
+  oc.fillStyle = "#000";
+  oc.font = pctx.font;
+  oc.textAlign = "center"; oc.textBaseline = "middle";
+  oc.fillText(ch, W*0.5, H*0.53);
+  const od = oc.getImageData(0,0,W,H).data;
+  maskData = new Uint8Array(W*H);
+  maskRatio = 0;
+  for(let i=0, j=0; i<W*H; i++, j+=4){
+    const a = od[j+3];
+    if(a > 110){ maskData[i] = 1; maskRatio++; }
+  }
+  if(maskRatio === 0) maskRatio = 1;
+
+  document.getElementById("pct").textContent = "0%";
+  // 画布事件
+  pad.onpointerdown = (e)=>{
+    drawing = true; last = pos(e);
+    musicStart();                 /* 落笔就有琴声，写起来不闷 */
+    pad.setPointerCapture?.(e.pointerId);
+    dot(last);
+  };
+  pad.onpointermove = (e)=>{
+    if(!drawing) return;
+    const p = pos(e);
+    pctx.strokeStyle = "#2b2620";
+    pctx.lineWidth = Math.max(2, W*0.062);
+    pctx.lineCap = "round"; pctx.lineJoin = "round";
+    pctx.beginPath(); pctx.moveTo(last.x, last.y); pctx.lineTo(p.x, p.y); pctx.stroke();
+    last = p; updatePct();
+  };
+  pad.onpointerup = pad.onpointercancel = ()=>{ drawing = false; last = null; };
+  document.getElementById("clear").onclick = ()=>{ initPad(document.getElementById("pad").dataset.ch || ch); };
+  document.getElementById("check").onclick = ()=> checkPad(ch);
+  pad.dataset.ch = ch;
+}
+
+function pos(e){
+  const r = pad.getBoundingClientRect();
+  const sc = pad.width / r.width;
+  return { x:(e.clientX - r.left)*sc, y:(e.clientY - r.top)*sc };
+}
+function dot(p){
+  pctx.fillStyle="#2b2620";
+  pctx.beginPath();
+  pctx.arc(p.x, p.y, Math.max(1.5, W*0.031), 0, Math.PI*2);
+  pctx.fill();
+}
+
+/* 覆盖率：笔迹落在字形区域内的比例 */
+/* 覆盖率：笔迹落在字形区域内的比例；顺带检查四角是否被涂满 */
+function coverage(){
+  const d = pctx.getImageData(0,0,W,H).data;
+  let ink=0, hit=0;
+  for(let i=0, j=0; i<W*H; i++, j+=4){
+    const a = d[j+3];
+    if(a < 40){ continue; }              // 透明像素不算笔迹（透明区 RGB 是 0，会被误判成黑）
+    const lum = 0.299*d[j] + 0.587*d[j+1] + 0.114*d[j+2];
+    if(lum < 110){
+      ink++;
+      if(maskData[i]) hit++;
+    }
+  }
+  // 四角抽样：字形不占四角，四角都黑说明是在涂格子
+  const boxW = Math.round(W*0.16);
+  const corners = [[0,0],[W-boxW,0],[0,H-boxW],[W-boxW,H-boxW]];
+  let hot = 0;
+  for(const [ox,oy] of corners){
+    let cnt=0, tot=0;
+    for(let y=oy; y<oy+boxW; y+=3){
+      for(let x=ox; x<ox+boxW; x+=3){
+        tot++;
+        const j=(Math.round(y)*W + Math.round(x))*4;
+        if(d[j+3] < 40) continue;
+        const lum = 0.299*d[j] + 0.587*d[j+1] + 0.114*d[j+2];
+        if(lum < 110) cnt++;
+      }
+    }
+    if(tot && cnt/tot > 0.22) hot++;
+  }
+  return { ratio: hit / maskRatio, ink: ink / (W*H), maskFrac: maskRatio / (W*H), hot };
+}
+function updatePct(){
+  const c = coverage();
+  const el = document.getElementById("pct");
+  if(el) el.textContent = Math.min(100, Math.round(c.ratio*100)) + "%";
+}
+function checkPad(ch){
+  if(pian >= 3) return;   /* 三遍已满，不再重复计 */
+  const c = coverage();
+  let stars = 0;
+  if(c.ratio >= 0.62) stars = 3;
+  else if(c.ratio >= 0.40) stars = 2;
+  else if(c.ratio >= 0.16) stars = 1;
+
+  // 防乱涂：不看笔迹多少，看有没有把格子四角都涂黑
+  const scribble = c.hot >= 3;
+  if(scribble) stars = Math.min(stars, 1);
+
+  if(stars > (S.stars[ch]||0)){ S.stars[ch] = stars; }
+  save();
+  const el = document.getElementById("stars");
+  if(el) el.innerHTML = starStr(S.stars[ch]||0);
+  updatePct();
+
+  if(stars === 0){ tip("还没描到字上，贴着灰笔画慢慢走"); return; }
+  if(scribble){ tip("别把格子涂满，要一笔一笔贴着字描"); return; }
+
+  /* 这一遍算过关 */
+  pian++;
+  const mt = document.getElementById("mtxt");
+  const gained = pian === 1 ? 30 : (pian === 2 ? 60 : 100);
+  const sc = document.getElementById("score");
+  if(sc){ sc.textContent = "得分 " + gained + " 分"; popScore(sc); }
+  if(pian >= 3){
+    S.done[ch] = true; save();
+    if(mt) mt.textContent = "三遍都写好了";
+    if(sc){ sc.textContent = "得分 100 分"; popScore(sc); }
+    pad.style.pointerEvents = "none";
+    confetti();
+    say(stars === 3 ? "一百分！三遍都写对了，宝贝真棒！" : "一百分！三遍都写完了，宝贝真棒！");
+    tip("满分！这个字归你了");
+    return;
+  }
+  if(mt) mt.textContent = `第 ${pian+1} 遍 · 共 3 遍`;
+  if(stars === 3){ say("宝贝真棒！"); tip("写得像，再写一遍"); }
+  else { tip("这一遍过了，再写一遍会更好"); }
+  initPad(ch);   /* 清空格子，接着描下一遍 */
+}
+
+/* ============ 游戏题 ============ */
+let qi = 0, qTotal = 0, qChars = [];
+
+function startQuiz(){
+  view="quiz"; qi = 0;
+  qChars = G[gi].c.slice(0, Math.min(3, G[gi].c.length));
+  qTotal = qChars.length;
+  nextQ();
+}
+
+function nextQ(){
+  if(qi >= qTotal){ finishGroup(); return; }
+  const target = qChars[qi];
+  const all = [];
+  G.forEach(g=>g.c.forEach(c=>{ if(!all.includes(c)) all.push(c); }));
+  const pool = all.filter(c=>c!==target).sort(()=>Math.random()-.5).slice(0,3);
+  const opts = [target, ...pool].sort(()=>Math.random()-.5);
+
+  titleEl.textContent = "小游戏";
+  subEl.textContent = `第 ${qi+1} / ${qTotal} 题`;
+  stage.innerHTML = `
+    <div class="card quiz">
+      <div class="qt">听一听，找出这个字</div>
+      <div class="qh">点喇叭可以再听一遍</div>
+      <div style="margin:6px 0 16px"><button class="btn say" id="play" style="max-width:180px;margin:0 auto;display:block">🔊 再听一遍</button></div>
+      <div class="opts">${opts.map(o=>`<button class="opt" data-c="${o}">${o}</button>`).join("")}</div>
+    </div>`;
+  setTimeout(()=>say(target), 220);
+  document.getElementById("play").onclick = ()=> say(target);
+  stage.querySelectorAll(".opt").forEach(btn=>{
+    btn.onclick = ()=>{
+      const ok = btn.dataset.c === target;
+      btn.classList.add(ok ? "right" : "wrong");
+      if(ok){ say("对了"); setTimeout(()=>{ qi++; nextQ(); }, 650); }
+      else { say("再听听"); setTimeout(()=>btn.classList.remove("wrong"), 500); }
+    };
+  });
+}
+
+function finishGroup(){
+  const g = G[gi];
+  titleEl.textContent = g.n;
+  subEl.textContent = "这一课完成";
+  stage.innerHTML = `
+    <div class="card quiz">
+      <div style="font-size:40px;margin:6px 0 4px">${g.c.join("")}</div>
+      <div class="qt">这一组写完啦</div>
+      <div class="qh">${g.c.join("　")}</div>
+      <div class="row">
+        <button class="btn ghost" id="again">再练一遍</button>
+        <button class="btn next" id="home">回目录</button>
+      </div>
+    </div>`;
+  say("这一组写完啦，真棒");
+  document.getElementById("again").onclick = ()=>{ ci=0; renderCard(); };
+  document.getElementById("home").onclick = ()=> renderHome();
+}
+
+/* ============ 背景音乐开关 · 语音选择 ============ */
+const musEl = document.getElementById("mus");
+const mus2El = document.getElementById("mus2");
+let ZH_VOICE = null, unlockBound = false;
+
+function setTopMusic(){
+  if(!musEl) return;
+  musEl.textContent = musicOn ? "♫ 音乐开" : "♫ 音乐关";
+  musEl.classList.toggle("off", !musicOn);
+}
+function bindUnlock(){
+  if(unlockBound) return;
+  unlockBound = true;
+  const kick = ()=>{
+    document.removeEventListener("pointerdown", kick, true);
+    document.removeEventListener("keydown", kick, true);
+    unlockBound = false;
+    if(musicOn) musicStart();
+  };
+  document.addEventListener("pointerdown", kick, true);
+  document.addEventListener("keydown", kick, true);
+}
+if(musEl) musEl.onclick = ()=>{
+  musicOn = !musicOn;
+  try{ localStorage.setItem("zs_music", musicOn ? "1" : "0"); }catch(e){}
+  setTopMusic();
+  if(musicOn){ musicStart(); } else { musicStop(); }
+  bindMusicToggle();
+  tip(musicOn ? "音乐开了" : "音乐关了");
+};
+
+function pickVoice(){
+  try{
+    const vs = speechSynthesis.getVoices() || [];
+    const zh = vs.filter(v=>/zh|cmn/i.test(v.lang||"") || /chinese/i.test(v.name||""));
+    let saved = null;
+    try{ saved = localStorage.getItem("zs_voice"); }catch(e){}
+    if(saved){
+      const hit = zh.find(v=>v.name === saved);
+      if(hit){ ZH_VOICE = hit; return; }
+    }
+    const order = ["Xiaoxiao","Xiaoyi","Xiaohan","Huihui","Yaoyao","Tingting","Kangkang","Yunyang"];
+    for(const k of order){
+      const hit = zh.find(v=>v.name.indexOf(k) >= 0);
+      if(hit){ ZH_VOICE = hit; return; }
+    }
+    if(zh.length) ZH_VOICE = zh[0];
+  }catch(e){}
+}
+function trySpeak(text){
+  try{
+    if(!window.speechSynthesis) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "zh-CN"; u.rate = 0.88; u.pitch = 1.0;
+    if(ZH_VOICE) u.voice = ZH_VOICE;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function openVoice(){
+  const has = HAS_TTS;
+  const vs = has ? zhVoiceList() : [];
+  const cur = ZH_VOICE ? ZH_VOICE.name : "";
+  const box = document.createElement("div");
+  box.className = "vpanel";
+  box.innerHTML = '<div class="vbox">'
+    + '<h3>朗读声音</h3>'
+    + (has
+        ? '<p>点一下试读。想要更自然的女声，到系统「设置 → 时间和语言 → 语音」里添加「中文（简体）」的晓晓，装好刷新本页，这里就能选到。</p>'
+          + (vs.length
+              ? vs.map((v,i)=>'<button class="vopt ' + (v.name===cur?"on":"") + '" data-i="' + i + '">' + v.name + '</button>').join("")
+              : '<p style="color:#c4553f">这台设备还没装中文语音，去系统设置里添一个。</p>')
+        : '<p style="color:#c4553f">这个浏览器没有内置朗读，已自动改用「在线发音」，连着网就能读。</p><button class="vopt" id="vtest" style="text-align:center">试听一句</button>')
+    + '<button class="vopt" id="vclose" style="text-align:center;color:#9a9287">关闭</button>'
+    + '</div>';
+  document.body.appendChild(box);
+  box.onclick = (e)=>{ if(e.target === box) box.remove(); };
+  document.getElementById("vclose").onclick = ()=> box.remove();
+  const vtest = document.getElementById("vtest");
+  if(vtest) vtest.onclick = ()=> say("春天来了，小草绿了。");
+  box.querySelectorAll(".vopt[data-i]").forEach(b=>{
+    b.onclick = ()=>{
+      ZH_VOICE = vs[+b.dataset.i];
+      try{ localStorage.setItem("zs_voice", ZH_VOICE.name); }catch(e){}
+      box.querySelectorAll(".vopt").forEach(x=>x.classList.remove("on"));
+      b.classList.add("on");
+      trySpeak("春天来了，小草绿了。");
+    };
+  });
+}
+if(mus2El) mus2El.onclick = openVoice;
+if(window.speechSynthesis){
+  pickVoice();
+  speechSynthesis.onvoiceschanged = pickVoice;
+}
+
+/* ============ 返回 ============ */
+backEl.onclick = ()=> renderHome();
+
+/* 支持 #g1c2 直接进某组某字（也方便截图与分享） */
+(function boot(){
+  if(location.hash.indexOf("cert") >= 0){ renderCert(); return; }
+  const m = location.hash.match(/^#g(\d+)c(\d+)/);
+  if(m && G[+m[1]]){
+    gi = Math.min(+m[1], G.length-1);
+    ci = Math.min(+m[2], G[gi].c.length-1);
+    renderCard();
+  } else { renderHome(); }
+  if(location.hash.indexOf("selftest") >= 0) selfTest();
+  window.addEventListener("load", function(){
+    setTopMusic();
+    if(musicOn) musicStart();
+  });
+})();
+
+/* 自检钩子：URL 带 #...selftest 时沿字形描一遍，用于核对判定算法 */
+function selfTestPaint(){
+  if(!maskData) return;
+  const r = W*0.031;
+  pctx.fillStyle = "#2b2620";
+  const step = W*0.018;
+  for(let y=0; y<H; y+=step){
+    for(let x=0; x<W; x+=step){
+      const i = Math.round(y)*W + Math.round(x);
+      if(maskData[i]){
+        pctx.beginPath(); pctx.arc(x, y, r, 0, Math.PI*2); pctx.fill();
+      }
+    }
+  }
+}
+function selfTest(){
+  selfTestPaint();
+  const c = coverage();
+  tip("自检：覆盖 " + Math.round(c.ratio*100) + "% · 四角 " + c.hot + " · 笔迹 " + Math.round(c.ink*100) + "%");
+  updatePct();
+}
+</script>
+
+<audio id="bgm" loop preload="none" src="bgm.mp3"></audio>
+</html>
