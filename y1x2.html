@@ -394,7 +394,7 @@ function onlineSpeak(text, onEnd){
     try{ ttsAudio.pause(); }catch(e){}
     ttsAudio.onended = function(){ if(onEnd) onEnd(); };
     ttsAudio.onerror = function(){ if(onEnd) onEnd(); };
-    ttsAudio.src = "https://fanyi.baidu.com/gettts?lan=zh&spd=2&source=web&text=" + encodeURIComponent(text);
+    ttsAudio.src = "https://fanyi.baidu.com/gettts?lan=zh&spd=5&source=web&text=" + encodeURIComponent(text);
     ttsAudio.volume = 1.0;
     var p = ttsAudio.play();
     if(p && p.catch){ p.catch(function(){ if(onEnd) onEnd(); }); }
